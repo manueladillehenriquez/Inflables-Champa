@@ -7,6 +7,11 @@
      para que el carrusel no lo cuente). Debe ir ANTES de armar el carrusel. */
   if (!document.documentElement.classList.contains('hw')) {
     [].slice.call(document.querySelectorAll('.hw-only')).forEach(function(el){ el.parentNode.removeChild(el); });
+  } else {
+    /* En octubre el slide de Halloween es el primero que se ve */
+    [].slice.call(document.querySelectorAll('.hero-bg.on, .hslide.on')).forEach(function(el){ el.classList.remove('on'); });
+    document.querySelector('.hero-bg.hw-hero').classList.add('on');
+    document.querySelector('.hslide--hw').classList.add('on');
   }
 
   /* Carrusel del hero */
@@ -192,4 +197,134 @@
     if (v('msg')) t += "\n\n" + v('msg');
     window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(t), '_blank');
   });
+})();
+/* HALLOWEEN ONLY — OCTUBRE 2026 — REMOVER DESPUÉS DEL 31 DE OCTUBRE
+   Interacción: bienvenida, calabazas tocables con confeti, parallax, aparecer al hacer scroll. */
+(function(){
+  var root = document.documentElement;
+  if (!root.classList.contains('hw')) return;
+  var calma = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fx = document.querySelector('.hw-fx');
+  var COLORES = ['#FEED01', '#FF7A1A', '#B58CFF', '#7EB6FF', '#ffffff', '#FF8FB1'];
+
+  function quitar(el, ms){ setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, ms); }
+  function confeti(x, y, n){
+    if (calma || !fx) return;
+    for (var k = 0; k < (n || 16); k++){
+      var s = document.createElement('span'), a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 80;
+      s.className = 'hw-c';
+      s.style.cssText = 'left:' + x + 'px;top:' + y + 'px;background:' + COLORES[k % COLORES.length] +
+        ';--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d - 30) + 'px;--r:' + Math.round(Math.random() * 540) + 'deg';
+      fx.appendChild(s); quitar(s, 1000);
+    }
+  }
+  function dice(texto, x, y){
+    if (!fx) return;
+    var s = document.createElement('span');
+    s.className = 'hw-say'; s.textContent = texto;
+    s.style.left = x + 'px'; s.style.top = (y - 26) + 'px';
+    fx.appendChild(s); quitar(s, 1150);
+  }
+
+  /* Calabazas tocables + contador */
+  var calabazas = [].slice.call(document.querySelectorAll('[data-calabaza]'));
+  var halladas = [];
+  var chip = document.getElementById('hw-contador'), chipTxt = document.getElementById('hw-cont-txt');
+  function actualizarChip(){
+    if (!chip) return;
+    chip.hidden = false;
+    chipTxt.textContent = halladas.length === calabazas.length
+      ? '¡Encontraste todas las calabazas!'
+      : 'Calabazas encontradas: ' + halladas.length + '/' + calabazas.length;
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest ? e.target.closest('.hw-tap') : null;
+    if (!t) return;
+    confeti(e.clientX, e.clientY, 16);
+    dice(t.getAttribute('data-say') || '¡Fiesta!', e.clientX, e.clientY);
+    t.classList.remove('hw-pop'); void t.offsetWidth; t.classList.add('hw-pop');
+    setTimeout(function(){ t.classList.remove('hw-pop'); }, 500);
+    if (t.hasAttribute('data-calabaza') && halladas.indexOf(t) === -1){
+      halladas.push(t);
+      actualizarChip();
+      if (halladas.length === calabazas.length){
+        for (var i = 0; i < 5; i++){
+          (function(i){ setTimeout(function(){ confeti(innerWidth * (.15 + Math.random() * .7), innerHeight * (.2 + Math.random() * .5), 30); }, i * 220); })(i);
+        }
+      }
+    }
+  });
+
+  /* Bienvenida (una vez por visita; no aparece si se entra a una sección por enlace) */
+  var w = document.getElementById('hw-welcome');
+  if (w){
+    var visto = false;
+    try { visto = sessionStorage.getItem('hw-bienvenida') === '1'; } catch (err) {}
+    var go = w.querySelector('.hw-w-go'), x = w.querySelector('.hw-w-x');
+    var cerrar = function(conFiesta){
+      w.hidden = true; root.classList.remove('hw-welcome-open');
+      try { sessionStorage.setItem('hw-bienvenida', '1'); } catch (err) {}
+      if (conFiesta) { confeti(innerWidth / 2, innerHeight / 2, 40); }
+    };
+    if (!visto && !location.hash){
+      w.hidden = false; root.classList.add('hw-welcome-open');
+      setTimeout(function(){ go.focus(); }, 60);
+      go.addEventListener('click', function(){ cerrar(true); });
+      x.addEventListener('click', function(){ cerrar(false); });
+      w.addEventListener('click', function(e){ if (e.target === w) cerrar(false); });
+      document.addEventListener('keydown', function(e){
+        if (w.hidden) return;
+        if (e.key === 'Escape') cerrar(false);
+        if (e.key === 'Tab'){
+          var f = e.shiftKey ? go : x;
+          if (document.activeElement === (e.shiftKey ? x : go)){ e.preventDefault(); f.focus(); }
+        }
+      });
+    }
+  }
+
+  /* Parallax suave de los personajes grandes */
+  var pars = [].slice.call(document.querySelectorAll('.hw-par'));
+  if (pars.length && !calma){
+    var pendiente = false;
+    var mover = function(){
+      var h = innerHeight;
+      pars.forEach(function(p){
+        var r = p.parentNode.getBoundingClientRect();
+        var c = r.top + r.height / 2 - h / 2;
+        p.style.transform = 'translate3d(0,' + (c * parseFloat(p.getAttribute('data-s') || '.06')).toFixed(1) + 'px,0)';
+      });
+      pendiente = false;
+    };
+    addEventListener('scroll', function(){ if (!pendiente){ pendiente = true; requestAnimationFrame(mover); } }, { passive: true });
+    addEventListener('resize', mover);
+    mover();
+  }
+
+  /* Aparecer al hacer scroll (si algo falla, a los 6 s se muestra todo) */
+  if ('IntersectionObserver' in window && !calma){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('hw-in'); io.unobserve(en.target); } });
+    }, { threshold: .12 });
+    [].slice.call(document.querySelectorAll('.porque-card,.card,.testi-card,.zona,.faq-item,.hw-card,.consid,.recargos,.info')).forEach(function(el){
+      el.classList.add('hw-rv'); io.observe(el);
+    });
+    setTimeout(function(){
+      [].slice.call(document.querySelectorAll('.hw-rv:not(.hw-in)')).forEach(function(el){ el.classList.add('hw-in'); });
+    }, 6000);
+  }
+
+  /* Estelas de estrellitas con el mouse (solo escritorio) */
+  if (!calma && fx && window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches){
+    var ult = 0;
+    addEventListener('pointermove', function(e){
+      var t = Date.now();
+      if (t - ult < 80) return;
+      ult = t;
+      var s = document.createElement('span');
+      s.className = 'hw-st'; s.textContent = '✦';
+      s.style.cssText = 'left:' + e.clientX + 'px;top:' + e.clientY + 'px;font-size:' + (10 + Math.round(Math.random() * 8)) + 'px;color:' + COLORES[Math.floor(Math.random() * 3)];
+      fx.appendChild(s); quitar(s, 850);
+    }, { passive: true });
+  }
 })();
