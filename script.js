@@ -2,6 +2,13 @@
   var WA = "56942294670";
   var INTERVALO = 7000;          /* 7 s por diapositiva */
 
+  /* HALLOWEEN ONLY — OCTUBRE 2026 — REMOVER DESPUÉS DEL 31 DE OCTUBRE
+     Fuera de octubre 2026 se quita del DOM todo lo de Halloween (incluido el slide del carrusel,
+     para que el carrusel no lo cuente). Debe ir ANTES de armar el carrusel. */
+  if (!document.documentElement.classList.contains('hw')) {
+    [].slice.call(document.querySelectorAll('.hw-only')).forEach(function(el){ el.parentNode.removeChild(el); });
+  }
+
   /* Carrusel del hero */
   var slides = document.querySelectorAll('.hslide');
   var fondos = document.querySelectorAll('.hero-bg');

@@ -334,3 +334,88 @@ footer p{font-size:.85rem;opacity:.7;margin:.25rem 0}
   .bar{width:32px}
   .fila{grid-template-columns:1fr}
 }
+
+/* ===== HALLOWEEN ONLY — OCTUBRE 2026 — REMOVER DESPUÉS DEL 31 DE OCTUBRE =====
+   Todo lo de Halloween lleva la clase .hw-only y solo se ve si <html> tiene la clase .hw
+   (la pone el script del <head> únicamente durante octubre de 2026). */
+html:not(.hw) .hw-only{display:none !important}
+.hw section,.hw footer{position:relative}
+.hw footer{overflow:hidden}
+
+/* animaciones suaves (sin parpadeos ni movimientos bruscos) */
+@keyframes hw-flota{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-9px) rotate(3deg)}}
+@keyframes hw-balanceo{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+@keyframes hw-brinca{from{transform:translateY(0)}to{transform:translateY(-24px)}}
+@keyframes hw-confeti{from{transform:translateY(0) rotate(0)}to{transform:translateY(22px) rotate(40deg)}}
+@keyframes hw-brilla{from{transform:scale(.85) rotate(0)}to{transform:scale(1.12) rotate(18deg)}}
+@keyframes hw-cuelga{from{transform:scaleY(1)}to{transform:scaleY(1.16)}}
+@keyframes hw-vuela{from{transform:translateX(-140px)}to{transform:translateX(calc(100vw + 40px))}}
+@keyframes hw-bob{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(7px) rotate(2deg)}}
+@keyframes hw-sway{from{transform:skewX(-2.2deg)}to{transform:skewX(2.2deg)}}
+@keyframes hw-respira{from{transform:scale(1,1)}to{transform:scale(1.008,1.022)}}
+@keyframes hw-luz{from{filter:drop-shadow(0 0 2px rgba(255,214,64,.3))}to{filter:drop-shadow(0 0 8px rgba(255,214,64,.9))}}
+
+.hw-flota{animation:hw-flota 3.6s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-balanceo{animation:hw-balanceo 4.2s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-brinca{animation:hw-brinca 1.7s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-confeti{animation:hw-confeti 5s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-brilla{animation:hw-brilla 4.5s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-cuelga,.hw-arana-cuelga{transform-origin:50% 0;animation:hw-cuelga 3.4s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hw-respira{animation:hw-respira 3.2s ease-in-out infinite alternate}
+.hw-brilla-luz{animation:hw-luz 3s ease-in-out infinite alternate}
+.hw-hero g[class^="hw-"],.hw-hero g[class*=" hw-"]{transform-box:fill-box;transform-origin:center}
+.hw-hero .hw-brinca{transform-origin:50% 100%}
+.hw-hero .hw-respira{transform-origin:50% 100%}
+
+/* franja bajo el navbar */
+.hw-strip{position:relative;height:60px;overflow:hidden;pointer-events:none}
+.hw-banderas{position:absolute;left:0;top:0;transform-origin:50% 0;animation:hw-sway 4.6s ease-in-out infinite alternate}
+.hw-tela{position:absolute;top:0;width:64px;height:64px;color:#6B3FD1;opacity:.6;pointer-events:none;overflow:visible}
+.hw-tela--izq{left:0}
+.hw-tela--der{right:0;transform:scaleX(-1)}
+.hw-arana-cuelga{position:absolute;left:46px;top:0;pointer-events:none}
+.hw-vuela{position:absolute;top:12px;left:0;width:92px;height:57px;animation:hw-vuela 38s linear infinite;animation-delay:2s}
+.hw-bob{display:block;animation:hw-bob 2.6s ease-in-out infinite alternate}
+
+/* decoración suelta */
+.hw-deco{position:absolute;top:.55rem;z-index:1;pointer-events:none;overflow:visible}
+.hw-tela--pie{color:#fff;opacity:.55;z-index:1}
+.hw-arana-pie{left:46px;z-index:1}
+
+/* banda de mensajes para papás */
+.hw-promo{padding:3rem 0 1rem}
+.hw-eyebrow{color:#5B2FC9 !important;background:rgba(142,77,255,.16) !important}
+.hw-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2.4rem 1.4rem;padding-top:2.4rem}
+.hw-card{position:relative;background:#fff;border:1px solid var(--borde);border-top:5px solid #FF7A1A;border-radius:var(--radio);
+  padding:3rem 1.4rem 1.6rem;text-align:center;box-shadow:var(--sombra);transition:transform .25s var(--ease), box-shadow .25s var(--ease)}
+.hw-card:nth-child(2){border-top-color:#8E4DFF}
+.hw-card:nth-child(3){border-top-color:var(--azul)}
+.hw-card:hover{transform:translateY(-6px);box-shadow:var(--sombra-alta)}
+.hw-card-ico{position:absolute;top:-2.6rem;left:50%;margin-left:-42px;width:84px;height:84px;border-radius:50%;
+  display:grid;place-items:center;background:#fff;box-shadow:0 0 0 4px #FFE2B8, 0 8px 18px rgba(31,36,48,.14)}
+.hw-card h3{font-size:1.1rem;font-weight:800;line-height:1.3;letter-spacing:-.01em}
+.hw-card p{font-size:.92rem;color:var(--gris-fuerte);margin-top:.5rem;line-height:1.55}
+.hw-cta{text-align:center;margin-top:2.2rem}
+.btn-halloween{background:#5B2FC9;color:#fff;box-shadow:0 6px 18px rgba(91,47,201,.35);font-weight:800}
+.btn-halloween:hover{transform:translateY(-3px);background:#4A22A8;box-shadow:0 12px 28px rgba(91,47,201,.45)}
+
+/* el slide de Halloween es un gráfico completo: sin sombra oscura encima */
+.hero-bg.on[data-pos="halloween"] ~ .hero-shade{opacity:0}
+.hero-bg.hw-hero{object-fit:unset}
+
+@media(max-width:720px){
+  .hw-strip{height:48px}
+  .hw-tela{width:46px;height:46px}
+  .hw-arana-cuelga{left:34px;width:24px;height:30px}
+  .hw-vuela{top:8px;width:72px;height:45px}
+  .hw-bob{width:72px;height:45px}
+  .hw-deco--d{display:none}
+  .hslide--hw .hero-cta .btn{flex:0 0 auto;padding:.55rem 1rem}
+  .hw-promo{padding-top:2rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .hw-flota,.hw-balanceo,.hw-brinca,.hw-confeti,.hw-brilla,.hw-cuelga,.hw-arana-cuelga,.hw-respira,
+  .hw-brilla-luz,.hw-banderas,.hw-bob{animation:none !important}
+  .hw-vuela{animation:none;transform:translateX(calc(100vw - 150px))}
+}
+/* ===== /HALLOWEEN ===== */
